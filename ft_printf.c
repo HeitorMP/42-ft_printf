@@ -13,7 +13,7 @@
 #include "ft_printf.h"
 #include <stdarg.h>
 
-int	ft_get_digits(long int nb)
+int	ft_get_digits(long long int nb)
 {
 	int	digits;
 
@@ -99,12 +99,43 @@ static char	*ft_strupcase(char *str)
 }
 
 
+int	ft_ptr_len(unsigned long long num)
+{
+	int	len;
+
+	len = 0;
+	while (num != 0)
+	{
+		len++;
+		num = num / 16;
+	}
+	return (len);
+}
+
+static int put_pointer(unsigned long long np)
+{
+	char	base[] = "0123456789abcdef";
+	unsigned long long len;
+
+	len = ft_ptr_len(np);
+	if (np >= 16)
+	{
+		put_pointer(np / 16);
+		put_pointer(np % 16);
+	}
+	else
+		write(1, &base[np], 1);
+	return (len);
+}
+
 static int	put_hex(long int np, char x)
 {
 	char	base[] = "0123456789abcdef";
 	static int digits;
+
 	if (np < 0)
-		np = 4294967295 - (np * -1) + 1;
+		np =  (4294967295 - (np * -1)) + 1;
+
 	if (x == 'X')
 		ft_strupcase(base);
 	if (np >= 16)
@@ -145,7 +176,10 @@ static int ft_check_format(char next, va_list args)
 		char	*str;
 		str = va_arg(args, char*);
 		if (!str)
-			len = 0;
+		{
+			len = 6;
+			write(1, "(null)", 6);
+		}
 		else
 		{
 			ft_putstr_fd(str, 1);
@@ -162,23 +196,37 @@ static int ft_check_format(char next, va_list args)
 	else if (next == 'x' || next == 'X')
 	{
 		int	ret;
-		ret = va_arg(args, int);
+		ret = va_arg(args, long long int);
 		return(put_hex(ret, next));
 	}
 	else if (next == 'p')
 	{
-		long int ret;
-		ret = va_arg(args, long int);
-		write(1, "0x", 2);
-		put_hex(ret, 'x');
-		len = 14;
+		long long int ret;
+		ret = va_arg(args, long long int);
+		if (!ret)
+		{
+			write(1, "(nil)", 5);
+			len = 5;
+		}
+		else
+		{
+			write(1, "0x", 2);
+			len = put_pointer(ret) + 2;
+		}
 	}
 	else if (next == 'u')
 	{
-		long int ret;
-		ret = va_arg(args, long int);
-		len = ft_get_digits(ret);
-		ft_putunsigned(ret);
+		unsigned int ret;
+		ret = va_arg(args, unsigned int);
+		if (!ret)
+		{
+			len = 1;
+		}
+		else 
+		{
+			len = ft_get_digits(ret);
+			ft_putunsigned(ret);
+		}
 	}
 	return (len - 2);
 }
@@ -208,6 +256,10 @@ int main ()
 {
 	int a = 'f';
 	int b = 42;
+	char *ptr;
+	char *test;
+
+	test = ptr;
 	//unsigned int  c = -1;
 
 	ft_printf("Meu printf:\n");
@@ -221,7 +273,9 @@ int main ()
 	ft_printf("UnInt Size: %d\n", g);
 	int h = ft_printf("Int: %d\n", b);
 	ft_printf("int Size: %d\n", h);
-	int i = ft_printf("Pointer: %p\n", &a);
+	int q = ft_printf("A pointer at %p points to %p\n", &test, &ptr);
+	ft_printf("%d\n", q);
+	int i = ft_printf("Pointer: %p\n" ,(void *)0xdeadc0de );
 	ft_printf("Pointer Size: %d\n", i);
 
 //	int z = ft_printf("\n%ces\\te\n %s\n %d - %x - %X - %p\n %i - %x - %X - %p\n %i - %d - %u", 't', "teste", b, b, b, &b, a, a, a, &a, c, c, c);
@@ -229,16 +283,18 @@ int main ()
 	ft_printf("\n------------------------------\n");
 	ft_printf("Printf original:\n");
 	int j = printf("Hexa: %x\n", 123456);
-	ft_printf("hexa size: %d\n", j);
+	printf("hexa size: %d\n", j);
 	int k = printf("String: %s\n", "teste");
-	ft_printf("String size: %i\n", k);
+	printf("String size: %i\n", k);
 	int l = printf("Char: %c\n", 'c');
-	ft_printf("Char size: %d\n", l);
+	printf("Char size: %d\n", l);
 	int m = printf("Unsinged int: %u\n", -1);
-	ft_printf("UnInt size: %d\n", m);
+	printf("UnInt size: %d\n", m);
 	int n = printf("Int: %d\n", b);
-	ft_printf("Int size: %d\n", n);
-	int o = printf("Pointer: %p\n", &a);
-	ft_printf("Pointer size: %d\n", o);
+	printf("Int size: %d\n", n);
+	int p = printf("A pointer at %p points to %p\n", &test, &ptr);
+	printf("%d\n", p);
+	int o = printf("Pointer: %p\n",(void *)0xdeadc0de );
+	printf("Pointer size: %d\n", o);
 	return 0;
 }*/

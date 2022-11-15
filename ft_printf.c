@@ -32,7 +32,20 @@ int	ft_get_digits(long long int nb)
 	}
 	return (digits);
 }
+int	ft_get_hexlen(unsigned	int num)
+{
+	int	len;
 
+	if (num == 0)
+		return (1);
+	len = 0;
+	while (num != 0)
+	{
+		len++;
+		num = num / 16;
+	}
+	return (len);
+}
 static void	ft_putchar_fd(char c, int fd)
 {	
 	write(fd, &c, 1);
@@ -128,11 +141,10 @@ static int put_pointer(unsigned long long np)
 	return (len);
 }
 
-static int	put_hex(long int np, char x)
+static void	put_hex(long int np, char x)
 {
 	char	base[] = "0123456789abcdef";
-	static int digits;
-
+	
 	if (np < 0)
 		np =  (4294967295 - (np * -1)) + 1;
 
@@ -142,11 +154,9 @@ static int	put_hex(long int np, char x)
 	{
 		put_hex(np / 16, x);
 		put_hex(np % 16, x);
-		digits++;
 	}
 	else
 		write(1, &base[np], 1);
-	return (digits - 1);
 }
 
 static void ft_putunsigned(unsigned int n)
@@ -197,7 +207,8 @@ static int ft_check_format(char next, va_list args)
 	{
 		int	ret;
 		ret = va_arg(args, long long int);
-		return(put_hex(ret, next));
+		len = ft_get_hexlen(ret);
+		put_hex(ret, next);
 	}
 	else if (next == 'p')
 	{
@@ -218,15 +229,8 @@ static int ft_check_format(char next, va_list args)
 	{
 		unsigned int ret;
 		ret = va_arg(args, unsigned int);
-		if (!ret)
-		{
-			len = 1;
-		}
-		else 
-		{
-			len = ft_get_digits(ret);
-			ft_putunsigned(ret);
-		}
+		len = ft_get_digits(ret);
+		ft_putunsigned(ret);
 	}
 	return (len - 2);
 }
@@ -243,7 +247,7 @@ int	ft_printf(const char *str, ...)
 		if(*str == '%')
 		{
 			str++;
-			len += ft_check_format(*str, argp);
+			len = len + ft_check_format(*str, argp);
 		}
 		else 
 			write(1, &*str, 1);
@@ -260,41 +264,63 @@ int main ()
 	char *test;
 
 	test = ptr;
-	//unsigned int  c = -1;
+	unsigned int  c = -1;
 
 	ft_printf("Meu printf:\n");
-	int d = ft_printf("Hexa: %x\n", 123456);
+	int d = ft_printf("Hexa: %x - %c\n", 200000000, -1);
 	ft_printf("hexa size: %d\n", d);
-	int e = ft_printf("String: %s\n", "teste");
+
+	int e = ft_printf("String: %s\n", "");
 	ft_printf("String size: %i\n", e);
+
 	int f = ft_printf("Char: %c\n", 'c');
 	ft_printf("Char size: %d\n", f);
+
 	int g = ft_printf("Unsinged int: %u\n", -1);
-	ft_printf("UnInt Size: %d\n", g);
-	int h = ft_printf("Int: %d\n", b);
+	ft_printf("UnInt Size: %u\n", g);
+
+	int h = ft_printf("Int: %i\n", -20);
 	ft_printf("int Size: %d\n", h);
+
 	int q = ft_printf("A pointer at %p points to %p\n", &test, &ptr);
 	ft_printf("%d\n", q);
-	int i = ft_printf("Pointer: %p\n" ,(void *)0xdeadc0de );
+
+	int i = ft_printf("Pointer: %p\n" ,(void *)-1 );
 	ft_printf("Pointer Size: %d\n", i);
 
-//	int z = ft_printf("\n%ces\\te\n %s\n %d - %x - %X - %p\n %i - %x - %X - %p\n %i - %d - %u", 't', "teste", b, b, b, &b, a, a, a, &a, c, c, c);
-//	ft_printf("\n%i", z);
-	ft_printf("\n------------------------------\n");
-	ft_printf("Printf original:\n");
-	int j = printf("Hexa: %x\n", 123456);
+//	int  r = ft_printf("%c - %s - %p %d - %i - %u - %x %X %%\n", 'c', "", (void *)-1, 20, -20, -1, -1, 200000000);
+//	ft_printf("Mix: %d\n", r);
+	int z = 0;
+	z = ft_printf("\ni%ces\\te\n %s\n %d - %x - %X - %p\n %i - %x - %X - %p\n %i - %d - %u", 't', "teste", b, b, b, &b, a, a, a, &a, c, c, c);
+	ft_printf("\n%i", z);
+//	ft_printf("\n------------------------------\n");
+//	ft_printf("Printf original:\n");
+	int h = 0;
+	h = ft_printf("\ni%ces\\te\n %s\n %d - %x - %X - %p\n %i - %x - %X - %p\n %i - %d - %u", 't', "teste", b, b, b, &b, a, a, a, &a, c, c, c);
+	ft_printf("\n%i\n", h);
+
+	int j = printf("Hexa: %x - %c\n", 200000000, -1);
 	printf("hexa size: %d\n", j);
-	int k = printf("String: %s\n", "teste");
+
+	int k = printf("String: %s\n", "");
 	printf("String size: %i\n", k);
+
 	int l = printf("Char: %c\n", 'c');
 	printf("Char size: %d\n", l);
+
 	int m = printf("Unsinged int: %u\n", -1);
-	printf("UnInt size: %d\n", m);
-	int n = printf("Int: %d\n", b);
+	printf("UnInt size: %u\n", m);
+
+	int n = printf("Int: %i\n", -20);
 	printf("Int size: %d\n", n);
+
 	int p = printf("A pointer at %p points to %p\n", &test, &ptr);
 	printf("%d\n", p);
-	int o = printf("Pointer: %p\n",(void *)0xdeadc0de );
+
+	int o = printf("Pointer: %p\n",(void *)-1 );
 	printf("Pointer size: %d\n", o);
+
+	int s = printf("%c - %s - %p %d - %i - %u - %x %X %%", 'c', "", (void *)-1, 20, -20, -1, -1, 200000000);
+	printf("Mix: %d\n", s);
 	return 0;
-}*/
+} */

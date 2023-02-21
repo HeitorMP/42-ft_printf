@@ -18,7 +18,7 @@ This 42 project consists of recode some format specifiers from the printf() func
 | %%          | Prints a percent sign.       | 
 
 ## Bonus part:
-![work in progress](https://www.provincia.vicenza.it/immagini/work_in_porgress_.jpg/image)
+![work in progress](https://w7.pngwing.com/pngs/169/68/png-transparent-architectural-engineering-graphy-work-in-progress-angle-building-text-thumbnail.png)
 
 
 

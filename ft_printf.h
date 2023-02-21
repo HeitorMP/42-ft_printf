@@ -16,7 +16,6 @@
 # include <stdarg.h>
 # include <stdio.h>
 # include <unistd.h>
-//# include "libft.h"
 
 int			ft_printf(const char *str, ...);
 int			ft_get_digits(long long int nb);

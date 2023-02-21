@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hmaciel- <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hmaciel- <hmaciel-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/15 10:06:33 by hmaciel-          #+#    #+#             */
-/*   Updated: 2022/11/15 13:47:48 by hmaciel-         ###   ########.fr       */
+/*   Updated: 2023/02/21 08:10:23 by hmaciel-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,6 @@ int	ft_get_hexlen(unsigned	int num)
 		num = num / 16;
 	}
 	return (len);
-}
-
-char	*ft_strupcase(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] >= 'a' && str[i] <= 'z')
-			str[i] -= ('a' - 'A');
-		i++;
-	}
-	return (str);
 }
 
 int	ft_ptr_len(unsigned long long num)

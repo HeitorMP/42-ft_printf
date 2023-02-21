@@ -6,7 +6,7 @@
 /*   By: hmaciel- <hmaciel-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 04:32:40 by hmaciel-          #+#    #+#             */
-/*   Updated: 2022/11/15 12:08:22 by hmaciel-         ###   ########.fr       */
+/*   Updated: 2023/02/21 07:41:52 by hmaciel-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ int	ft_printf(const char *str, ...)
 			write(1, &*str, 1);
 		str++;
 	}
+	va_end(argp);
 	return (len);
 }

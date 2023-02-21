@@ -29,7 +29,7 @@ This 42 project consists of recode some format specifiers from the printf() func
 
 
 
-## What i learn:
+## What i learned:
  - Variadic function
  - C programming
  - Basic algorithms
